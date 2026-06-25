@@ -3,6 +3,7 @@ import './pricing.css'
 import type { FxKaynak } from '@shared/domain'
 import { usePricing } from './usePricing'
 import { SaveConfirmModal } from './SaveConfirmModal'
+import { CatalogPanel, type Dock } from './CatalogPanel'
 import { buildSavePayload, buildSupplierUpsert } from './savePricing'
 import type { PricingRow } from './model'
 
@@ -19,6 +20,8 @@ export function PricingScreen(): JSX.Element {
   const [kritikMarj, setKritikMarj] = useState('')
   const [showSave, setShowSave] = useState(false)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
+  const [katalogAcik, setKatalogAcik] = useState(false)
+  const [dock, setDock] = useState<Dock>('right')
 
   const kritik = kritikMarj === '' ? null : Number(kritikMarj)
   const gorunen = useMemo(
@@ -128,6 +131,9 @@ export function PricingScreen(): JSX.Element {
           />
         </div>
         <div className="tb-spacer" />
+        <button className={`btn ${katalogAcik ? 'btn-soft' : 'btn-ghost'}`} onClick={() => setKatalogAcik((v) => !v)}>
+          📁 Katalog
+        </button>
         <button className="btn btn-ghost" onClick={p.reload} disabled={p.loading}>
           ↻ Yenile
         </button>
@@ -144,6 +150,7 @@ export function PricingScreen(): JSX.Element {
       {p.error && <div className="pricing-msg err">Hata: {p.error}</div>}
       {p.loading && <div className="pricing-msg">Canlı ürünler ve kurlar yükleniyor…</div>}
 
+      <div className={`pricing-body dock-${dock}`}>
       <div className="grid-wrap card">
         <table className="grid">
           <thead>
@@ -181,6 +188,10 @@ export function PricingScreen(): JSX.Element {
             )}
           </tbody>
         </table>
+      </div>
+        {katalogAcik && (
+          <CatalogPanel dock={dock} onDockChange={setDock} onClose={() => setKatalogAcik(false)} />
+        )}
       </div>
 
       {showSave && (

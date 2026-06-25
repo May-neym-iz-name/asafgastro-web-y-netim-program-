@@ -60,6 +60,11 @@ const api = {
     getRates: (kaynak?: string, kodlar?: string[]): Promise<IpcResult<unknown[]>> =>
       ipcRenderer.invoke(IPC.fx.getRates, kaynak, kodlar)
   },
+  catalog: {
+    pick: (): Promise<IpcResult<{ ad: string; yol: string }[]>> =>
+      ipcRenderer.invoke(IPC.catalog.pick),
+    read: (yol: string): Promise<IpcResult<string>> => ipcRenderer.invoke(IPC.catalog.read, yol)
+  },
   supabase: {
     signIn: (email: string, sifre: string): Promise<IpcResult<unknown>> =>
       ipcRenderer.invoke(IPC.supabase.signIn, email, sifre),

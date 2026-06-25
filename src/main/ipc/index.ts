@@ -1,4 +1,6 @@
-import { ipcMain, app } from 'electron'
+import { ipcMain, app, dialog, BrowserWindow } from 'electron'
+import { readFileSync } from 'fs'
+import { basename } from 'path'
 import { IPC, type IpcResult } from '@shared/ipc'
 import { getConfigStatus } from '../config'
 import { checkForUpdates } from '../updater'
@@ -78,6 +80,22 @@ export function registerIpcHandlers(): void {
   handle(IPC.ups.resolveArea, (cityCode, query) =>
     ups.resolveArea(cityCode as number, query as string)
   )
+
+  // --- Katalog PDF ---
+  handle(IPC.catalog.pick, async () => {
+    const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+    const result = await dialog.showOpenDialog(win, {
+      title: 'Katalog PDF seç',
+      filters: [{ name: 'PDF', extensions: ['pdf'] }],
+      properties: ['openFile', 'multiSelections']
+    })
+    if (result.canceled) return []
+    return result.filePaths.map((p) => ({ ad: basename(p), yol: p }))
+  })
+  handle(IPC.catalog.read, (yol) => {
+    const buf = readFileSync(yol as string)
+    return `data:application/pdf;base64,${buf.toString('base64')}`
+  })
 
   // --- Döviz (FX) ---
   handle(IPC.fx.getRates, (kaynak, kodlar) =>
