@@ -7,6 +7,8 @@ import type { UrunFiltre } from '../services/ticimax'
 import type { WebSiparisFiltre } from '../services/ticimax'
 import * as ups from '../services/ups'
 import type { GonderiGirdi } from '../services/ups'
+import { getRates } from '../services/fx'
+import type { FxKaynak } from '@shared/domain'
 
 /** IPC handler'ı tutarlı IpcResult zarfıyla sarmalar. */
 function handle<T>(channel: string, fn: (...args: unknown[]) => Promise<T> | T): void {
@@ -55,5 +57,10 @@ export function registerIpcHandlers(): void {
   handle(IPC.ups.listAreas, (cityCode) => ups.listAreas(cityCode as number))
   handle(IPC.ups.resolveArea, (cityCode, query) =>
     ups.resolveArea(cityCode as number, query as string)
+  )
+
+  // --- Döviz (FX) ---
+  handle(IPC.fx.getRates, (kaynak, kodlar) =>
+    getRates((kaynak ?? 'TCMB') as FxKaynak, (kodlar ?? ['USD', 'EUR']) as string[])
   )
 }

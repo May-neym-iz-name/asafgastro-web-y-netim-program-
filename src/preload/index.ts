@@ -40,6 +40,10 @@ const api = {
       ipcRenderer.invoke(IPC.ups.createShipment, girdi),
     cancelShipment: (waybill: string): Promise<IpcResult<unknown>> =>
       ipcRenderer.invoke(IPC.ups.cancelShipment, waybill)
+  },
+  fx: {
+    getRates: (kaynak?: string, kodlar?: string[]): Promise<IpcResult<unknown[]>> =>
+      ipcRenderer.invoke(IPC.fx.getRates, kaynak, kodlar)
   }
 }
 
