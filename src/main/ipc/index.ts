@@ -2,6 +2,9 @@ import { ipcMain, app } from 'electron'
 import { IPC, type IpcResult } from '@shared/ipc'
 import { getConfigStatus } from '../config'
 import { checkForUpdates } from '../updater'
+import * as ticimax from '../services/ticimax'
+import type { UrunFiltre } from '../services/ticimax'
+import type { WebSiparisFiltre } from '../services/ticimax'
 
 /** IPC handler'ı tutarlı IpcResult zarfıyla sarmalar. */
 function handle<T>(channel: string, fn: (...args: unknown[]) => Promise<T> | T): void {
@@ -25,4 +28,19 @@ export function registerIpcHandlers(): void {
   handle(IPC.app.getVersion, () => ({ version: app.getVersion(), name: app.getName() }))
   handle(IPC.app.checkForUpdates, () => checkForUpdates())
   handle(IPC.config.getStatus, () => getConfigStatus())
+
+  // --- Ticimax (okuma) ---
+  handle(IPC.ticimax.selectUrun, (filtre, sayfalama) =>
+    ticimax.selectUrun((filtre ?? {}) as UrunFiltre, (sayfalama ?? {}) as Record<string, never>)
+  )
+  handle(IPC.ticimax.selectUrunCount, (filtre) =>
+    ticimax.selectUrunCount((filtre ?? {}) as UrunFiltre)
+  )
+  handle(IPC.ticimax.selectParaBirimi, () => ticimax.selectParaBirimi())
+  handle(IPC.ticimax.selectSiparis, (filtre, sayfalama) =>
+    ticimax.selectSiparis(
+      (filtre ?? {}) as WebSiparisFiltre,
+      (sayfalama ?? {}) as Record<string, never>
+    )
+  )
 }

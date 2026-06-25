@@ -14,6 +14,16 @@ const api = {
   },
   config: {
     getStatus: (): Promise<IpcResult<ConfigStatus>> => ipcRenderer.invoke(IPC.config.getStatus)
+  },
+  ticimax: {
+    selectUrun: (filtre?: unknown, sayfalama?: unknown): Promise<IpcResult<unknown[]>> =>
+      ipcRenderer.invoke(IPC.ticimax.selectUrun, filtre, sayfalama),
+    selectUrunCount: (filtre?: unknown): Promise<IpcResult<number>> =>
+      ipcRenderer.invoke(IPC.ticimax.selectUrunCount, filtre),
+    selectParaBirimi: (): Promise<IpcResult<unknown[]>> =>
+      ipcRenderer.invoke(IPC.ticimax.selectParaBirimi),
+    selectSiparis: (filtre?: unknown, sayfalama?: unknown): Promise<IpcResult<unknown[]>> =>
+      ipcRenderer.invoke(IPC.ticimax.selectSiparis, filtre, sayfalama)
   }
 }
 

@@ -13,9 +13,12 @@ export const IPC = {
   },
   ticimax: {
     selectUrun: 'ticimax:selectUrun',
+    selectUrunCount: 'ticimax:selectUrunCount',
+    selectParaBirimi: 'ticimax:selectParaBirimi',
     saveUrun: 'ticimax:saveUrun',
     selectSiparis: 'ticimax:selectSiparis',
-    setSiparisDurum: 'ticimax:setSiparisDurum'
+    setSiparisDurum: 'ticimax:setSiparisDurum',
+    saveKargoTakipNo: 'ticimax:saveKargoTakipNo'
   },
   ups: {
     createShipment: 'ups:createShipment',
