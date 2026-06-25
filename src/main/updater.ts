@@ -1,5 +1,8 @@
-import { autoUpdater } from 'electron-updater'
+import electronUpdater from 'electron-updater'
 import type { BrowserWindow } from 'electron'
+
+// electron-updater CommonJS modülü; ESM'de named export çözülmez → default'tan al
+const { autoUpdater } = electronUpdater
 
 /**
  * GitHub Releases üzerinden otomatik sürüm güncelleme.

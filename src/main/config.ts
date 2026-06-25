@@ -1,5 +1,5 @@
 import { app } from 'electron'
-import { config as loadDotenv } from 'dotenv'
+import dotenv from 'dotenv'
 import { join } from 'path'
 import type { ConfigStatus } from '@shared/ipc'
 
@@ -16,7 +16,7 @@ function ensureLoaded(): void {
   // Geliştirme: proje kökü; Paket: userData/.env
   const devPath = join(process.cwd(), '.env')
   const prodPath = join(app.getPath('userData'), '.env')
-  loadDotenv({ path: app.isPackaged ? prodPath : devPath })
+  dotenv.config({ path: app.isPackaged ? prodPath : devPath })
   loaded = true
 }
 

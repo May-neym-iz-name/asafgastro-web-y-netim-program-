@@ -1,5 +1,8 @@
-import { XMLParser } from 'fast-xml-parser'
+import fxp from 'fast-xml-parser'
 import type { FxKur } from '@shared/domain'
+
+// fast-xml-parser CJS; ESM'de güvenli erişim için default'tan al
+const { XMLParser } = fxp
 
 /**
  * TCMB (Merkez Bankası) günlük kurları. today.xml → ForexBuying(alış)/
