@@ -52,10 +52,12 @@ export async function getFxSettings(): Promise<FxSettings> {
 }
 
 export async function setFxSettings(s: Partial<FxSettings>): Promise<void> {
-  const { error } = await getSupabase()
-    .from('fx_settings')
-    .update({ ...s, updated_at: new Date().toISOString() })
-    .eq('id', 1)
+  // Yalnız bilinen alanlar yazılır (renderer'dan gelen beklenmeyen kolonları yok say)
+  const guvenli: Record<string, unknown> = { updated_at: new Date().toISOString() }
+  if (s.alis_kaynak != null) guvenli.alis_kaynak = String(s.alis_kaynak)
+  if (s.satis_kaynak != null) guvenli.satis_kaynak = String(s.satis_kaynak)
+  if (s.marjlar != null && typeof s.marjlar === 'object') guvenli.marjlar = s.marjlar
+  const { error } = await getSupabase().from('fx_settings').update(guvenli).eq('id', 1)
   if (error) throw new Error(error.message)
 }
 

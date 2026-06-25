@@ -1,5 +1,4 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
 import { IPC, type IpcResult, type AppVersionInfo, type ConfigStatus } from '@shared/ipc'
 
 /**
@@ -87,16 +86,15 @@ const api = {
 
 export type AsafApi = typeof api
 
+// Yalnız tip-güvenli, sınırlı `api` yüzeyi açılır. @electron-toolkit/preload'ın
+// electronAPI'si (ham ipcRenderer) BİLEREK açılmaz — tüm kanallara erişim verirdi.
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
   } catch (error) {
     console.error(error)
   }
 } else {
   // @ts-ignore (contextIsolation kapalıysa fallback — normalde kullanılmaz)
-  window.electron = electronAPI
-  // @ts-ignore
   window.api = api
 }

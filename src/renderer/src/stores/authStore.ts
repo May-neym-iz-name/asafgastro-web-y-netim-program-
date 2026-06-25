@@ -33,7 +33,7 @@ export const useAuth = create<AuthState>((set, get) => ({
       const user = res.ok ? (res.data as OturumKullanici | null) : null
       set({ durum: user ? 'authed' : 'anon', user, hata: null })
     } catch {
-      set({ durum: 'anon', user: null })
+      set({ durum: 'anon', user: null, hata: 'Oturum durumu alınamadı' })
     }
   },
 

@@ -34,13 +34,23 @@ export function useIlceArea(cityId: number | null): { ilceler: Ilce[]; areas: Ar
       setAreas([])
       return
     }
-    window.api.ups.listDistricts(cityId).then((r) => {
-      if (r.ok) setIlceler((r.data ?? []) as Ilce[])
-    })
+    let iptal = false
+    window.api.ups
+      .listDistricts(cityId)
+      .then((r) => {
+        if (!iptal && r.ok) setIlceler((r.data ?? []) as Ilce[])
+      })
+      .catch(() => {})
     // CityCode = plaka kodu ≈ cityId (TR plaka) — area listesi
-    window.api.ups.listAreas(cityId).then((r) => {
-      if (r.ok) setAreas((r.data ?? []) as Area[])
-    })
+    window.api.ups
+      .listAreas(cityId)
+      .then((r) => {
+        if (!iptal && r.ok) setAreas((r.data ?? []) as Area[])
+      })
+      .catch(() => {})
+    return () => {
+      iptal = true
+    }
   }, [cityId])
   return { ilceler, areas }
 }

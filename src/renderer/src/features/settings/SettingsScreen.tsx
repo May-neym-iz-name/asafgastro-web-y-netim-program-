@@ -129,7 +129,11 @@ function KullaniciYonetimi(): JSX.Element {
   useEffect(() => { yukle() }, [])
 
   async function rolDegistir(userId: string, roleId: number): Promise<void> {
-    await window.api.supabase.setUserRole(userId, roleId)
+    const res = await window.api.supabase.setUserRole(userId, roleId)
+    if (!res.ok) {
+      setHata(res.error ?? 'Rol değiştirilemedi')
+      return
+    }
     yukle()
   }
 

@@ -149,6 +149,12 @@ export function PricingScreen(): JSX.Element {
       {saveMsg && <div className="pricing-msg">{saveMsg}</div>}
       {p.error && <div className="pricing-msg err">Hata: {p.error}</div>}
       {p.loading && <div className="pricing-msg">Canlı ürünler ve kurlar yükleniyor…</div>}
+      {!p.loading && p.toplamUrun > p.rows.length && (
+        <div className="pricing-msg">
+          ⚠️ Toplam {p.toplamUrun} üründen ilk {p.rows.length} tanesi gösteriliyor. (Sayfalama
+          yakında — filtreyle daralt.)
+        </div>
+      )}
 
       <div className={`pricing-body dock-${dock}`}>
       <div className="grid-wrap card">

@@ -12,8 +12,8 @@ export function buildProductPayload(
   const aciklama = buildAciklamaHtml({
     baslik: form.urunAdi,
     giris: form.giris,
-    ozellikler: form.ozellikler,
-    teknik: form.teknik
+    ozellikler: form.ozellikler.map((o) => o.deger),
+    teknik: form.teknik.map((t) => ({ etiket: t.etiket, deger: t.deger }))
   })
 
   const urunKarti = {

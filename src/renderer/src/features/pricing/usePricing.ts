@@ -12,7 +12,10 @@ interface State {
   satisKaynak: FxKaynak
   alisKur: Record<string, number>
   satisKur: Record<string, number>
+  toplamUrun: number // Ticimax'teki toplam ürün (sayfalama uyarısı için)
 }
+
+const SAYFA_BOYUTU = 200
 
 const FX_KODLAR = ['USD', 'EUR']
 
@@ -24,7 +27,8 @@ export function usePricing() {
     alisKaynak: 'TCMB',
     satisKaynak: 'TCMB',
     alisKur: { TRY: 1 },
-    satisKur: { TRY: 1 }
+    satisKur: { TRY: 1 },
+    toplamUrun: 0
   })
   const [secili, setSecili] = useState<Set<number>>(new Set())
 
@@ -48,10 +52,13 @@ export function usePricing() {
           /* Supabase hazır değil — boş harita */
         }
 
-        const urunRes = await window.api.ticimax.selectUrun(
-          { Aktif: -1 },
-          { BaslangicIndex: 0, KayitSayisi: 200, SiralamaDegeri: 'ID', SiralamaYonu: 'DESC' }
-        )
+        const [urunRes, countRes] = await Promise.all([
+          window.api.ticimax.selectUrun(
+            { Aktif: -1 },
+            { BaslangicIndex: 0, KayitSayisi: SAYFA_BOYUTU, SiralamaDegeri: 'ID', SiralamaYonu: 'DESC' }
+          ),
+          window.api.ticimax.selectUrunCount({ Aktif: -1 })
+        ])
         if (!urunRes.ok) throw new Error(urunRes.error ?? 'Ürünler alınamadı')
 
         const rows = buildRows(urunRes.data ?? [], supplier, alisKur, satisKur)
@@ -62,7 +69,8 @@ export function usePricing() {
           alisKaynak,
           satisKaynak,
           alisKur,
-          satisKur
+          satisKur,
+          toplamUrun: countRes.ok ? (countRes.data ?? rows.length) : rows.length
         })
       } catch (e) {
         setState((s) => ({ ...s, loading: false, error: e instanceof Error ? e.message : String(e) }))

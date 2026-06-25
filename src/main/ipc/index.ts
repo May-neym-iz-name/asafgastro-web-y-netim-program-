@@ -1,7 +1,11 @@
 import { ipcMain, app, dialog, BrowserWindow } from 'electron'
-import { readFileSync } from 'fs'
+import { readFile } from 'fs/promises'
 import { basename } from 'path'
 import { IPC, type IpcResult } from '@shared/ipc'
+
+/** catalog.pick ile eklenen PDF yolları — catalog.read yalnız bunları okur (path traversal koruması). */
+const katalogIzinliYollar = new Set<string>()
+const MAKS_KATALOG_BYTE = 60 * 1024 * 1024 // 60 MB
 import { getConfigStatus } from '../config'
 import { checkForUpdates } from '../updater'
 import * as ticimax from '../services/ticimax'
@@ -90,10 +94,16 @@ export function registerIpcHandlers(): void {
       properties: ['openFile', 'multiSelections']
     })
     if (result.canceled) return []
+    for (const p of result.filePaths) katalogIzinliYollar.add(p)
     return result.filePaths.map((p) => ({ ad: basename(p), yol: p }))
   })
-  handle(IPC.catalog.read, (yol) => {
-    const buf = readFileSync(yol as string)
+  handle(IPC.catalog.read, async (yol) => {
+    const p = String(yol)
+    // Yalnız diyalogla eklenmiş .pdf yolları okunabilir (path traversal koruması)
+    if (!katalogIzinliYollar.has(p)) throw new Error('Bu dosya katalog seçimiyle eklenmemiş')
+    if (!/\.pdf$/i.test(p)) throw new Error('Yalnız PDF dosyaları okunabilir')
+    const buf = await readFile(p)
+    if (buf.byteLength > MAKS_KATALOG_BYTE) throw new Error('Katalog 60 MB sınırını aşıyor')
     return `data:application/pdf;base64,${buf.toString('base64')}`
   })
 

@@ -21,7 +21,7 @@ export function AppShell(): JSX.Element {
   const [activeId, setActiveId] = useState<string>('pricing')
   const [version, setVersion] = useState<string>('')
   const [status, setStatus] = useState<ConfigStatus | null>(null)
-  const { user, izinVar, yukle } = useAuth()
+  const { user, izinVar, yukle, durum } = useAuth()
 
   useEffect(() => {
     window.api.app.getVersion().then((res) => {
@@ -80,6 +80,12 @@ export function AppShell(): JSX.Element {
           </div>
         </header>
 
+        {durum === 'anon' && (
+          <div className="auth-banner">
+            🔓 Yetkilendirme pasif — giriş yapılmadı, tüm işlemler açık. Çok kullanıcılı güvenlik için
+            Ayarlar’dan giriş yapın (Supabase şeması + kullanıcı gerekir).
+          </div>
+        )}
         <main className="content">
           <Screen />
         </main>

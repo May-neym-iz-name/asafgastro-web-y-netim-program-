@@ -22,6 +22,7 @@ const esc = (s: string): string =>
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 
 export function buildAciklamaHtml(g: AciklamaGirdi): string {
   const baslik = esc(g.baslik || 'Ürün')

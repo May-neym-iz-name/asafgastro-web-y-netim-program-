@@ -1,5 +1,16 @@
 import { useEffect, useState } from 'react'
-import type { TeknikOzellik } from './descriptionTemplate'
+
+export interface OzellikSatir {
+  id: string
+  deger: string
+}
+export interface TeknikSatir {
+  id: string
+  etiket: string
+  deger: string
+}
+export const yeniId = (): string =>
+  globalThis.crypto?.randomUUID?.() ?? `id-${Date.now()}-${Math.random().toString(36).slice(2)}`
 
 export interface SecimListeleri {
   kategoriler: { id: number; tanim: string }[]
@@ -23,8 +34,8 @@ export interface UrunFormState {
   stokAdedi: string
   // açıklama şablonu
   giris: string
-  ozellikler: string[]
-  teknik: TeknikOzellik[]
+  ozellikler: OzellikSatir[]
+  teknik: TeknikSatir[]
   // görseller (base64)
   gorseller: string[]
 }
@@ -43,8 +54,8 @@ export const BOS_FORM: UrunFormState = {
   satisFiyati: '',
   stokAdedi: '0',
   giris: '',
-  ozellikler: [''],
-  teknik: [{ etiket: '', deger: '' }],
+  ozellikler: [{ id: yeniId(), deger: '' }],
+  teknik: [{ id: yeniId(), etiket: '', deger: '' }],
   gorseller: []
 }
 

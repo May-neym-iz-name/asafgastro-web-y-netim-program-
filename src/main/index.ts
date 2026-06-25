@@ -16,6 +16,8 @@ function createWindow(): BrowserWindow {
     backgroundColor: '#fff7ed',
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
+      // sandbox: ESM preload ile uyumsuz; CJS'e geçiş + test sonrası açılacak.
+      // contextIsolation açık + preload yalnız contextBridge ile minimal api açar.
       sandbox: false,
       contextIsolation: true,
       nodeIntegration: false
@@ -25,7 +27,13 @@ function createWindow(): BrowserWindow {
   mainWindow.on('ready-to-show', () => mainWindow.show())
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
+    // Yalnız http/https dış bağlantılar açılır (file:, custom protocol istismarını engeller)
+    try {
+      const u = new URL(details.url)
+      if (u.protocol === 'https:' || u.protocol === 'http:') shell.openExternal(details.url)
+    } catch {
+      /* hatalı URL — yok say */
+    }
     return { action: 'deny' }
   })
 

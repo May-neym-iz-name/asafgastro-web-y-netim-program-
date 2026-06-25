@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import './products.css'
 import { buildAciklamaHtml } from './descriptionTemplate'
 import { buildProductPayload, validateForm } from './buildProductPayload'
-import { useProductForm, dosyalariBase64, BOS_FORM, type UrunFormState } from './useProductForm'
+import { useProductForm, dosyalariBase64, BOS_FORM, yeniId, type UrunFormState } from './useProductForm'
 
 export function ProductsScreen(): JSX.Element {
   const { listeler, yukleniyor, hata } = useProductForm()
@@ -18,8 +18,8 @@ export function ProductsScreen(): JSX.Element {
       buildAciklamaHtml({
         baslik: form.urunAdi,
         giris: form.giris,
-        ozellikler: form.ozellikler,
-        teknik: form.teknik
+        ozellikler: form.ozellikler.map((o) => o.deger),
+        teknik: form.teknik.map((t) => ({ etiket: t.etiket, deger: t.deger }))
       }),
     [form.urunAdi, form.giris, form.ozellikler, form.teknik]
   )
@@ -154,28 +154,28 @@ export function ProductsScreen(): JSX.Element {
 
           <label className="sub">Ürün Özellikleri (madde madde)</label>
           {form.ozellikler.map((o, i) => (
-            <div className="liste-row" key={i}>
-              <input value={o} placeholder={`Özellik ${i + 1}`} onChange={(e) => {
-                const yeni = [...form.ozellikler]; yeni[i] = e.target.value; set('ozellikler', yeni)
-              }} />
-              <button className="btn-mini" onClick={() => set('ozellikler', form.ozellikler.filter((_, j) => j !== i))}>✕</button>
+            <div className="liste-row" key={o.id}>
+              <input value={o.deger} placeholder={`Özellik ${i + 1}`} onChange={(e) =>
+                set('ozellikler', form.ozellikler.map((x) => (x.id === o.id ? { ...x, deger: e.target.value } : x)))
+              } />
+              <button className="btn-mini" onClick={() => set('ozellikler', form.ozellikler.filter((x) => x.id !== o.id))}>✕</button>
             </div>
           ))}
-          <button className="btn-add" onClick={() => set('ozellikler', [...form.ozellikler, ''])}>+ Özellik ekle</button>
+          <button className="btn-add" onClick={() => set('ozellikler', [...form.ozellikler, { id: yeniId(), deger: '' }])}>+ Özellik ekle</button>
 
           <label className="sub">Teknik Özellikler (tablo)</label>
-          {form.teknik.map((t, i) => (
-            <div className="liste-row" key={i}>
-              <input value={t.etiket} placeholder="Etiket (ör. Güç)" onChange={(e) => {
-                const yeni = [...form.teknik]; yeni[i] = { ...yeni[i], etiket: e.target.value }; set('teknik', yeni)
-              }} />
-              <input value={t.deger} placeholder="Değer (ör. 2000W)" onChange={(e) => {
-                const yeni = [...form.teknik]; yeni[i] = { ...yeni[i], deger: e.target.value }; set('teknik', yeni)
-              }} />
-              <button className="btn-mini" onClick={() => set('teknik', form.teknik.filter((_, j) => j !== i))}>✕</button>
+          {form.teknik.map((t) => (
+            <div className="liste-row" key={t.id}>
+              <input value={t.etiket} placeholder="Etiket (ör. Güç)" onChange={(e) =>
+                set('teknik', form.teknik.map((x) => (x.id === t.id ? { ...x, etiket: e.target.value } : x)))
+              } />
+              <input value={t.deger} placeholder="Değer (ör. 2000W)" onChange={(e) =>
+                set('teknik', form.teknik.map((x) => (x.id === t.id ? { ...x, deger: e.target.value } : x)))
+              } />
+              <button className="btn-mini" onClick={() => set('teknik', form.teknik.filter((x) => x.id !== t.id))}>✕</button>
             </div>
           ))}
-          <button className="btn-add" onClick={() => set('teknik', [...form.teknik, { etiket: '', deger: '' }])}>+ Satır ekle</button>
+          <button className="btn-add" onClick={() => set('teknik', [...form.teknik, { id: yeniId(), etiket: '', deger: '' }])}>+ Satır ekle</button>
         </section>
 
         <section className="card prod-section">

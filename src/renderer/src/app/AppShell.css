@@ -141,6 +141,15 @@
   background: var(--color-danger);
 }
 
+.auth-banner {
+  background: #fffbeb;
+  color: #92400e;
+  border-bottom: 1px solid #fcd34d;
+  padding: 8px var(--space-5);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
 .content {
   flex: 1;
   overflow: auto;
