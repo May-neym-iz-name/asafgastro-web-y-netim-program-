@@ -8,7 +8,7 @@ interface Rol { id: number; ad: string; izinler: string[] }
 interface Profil { id: string; adSoyad: string | null; rolId: number | null; rolAd: string | null; aktif: boolean }
 
 export function SettingsScreen(): JSX.Element {
-  const { durum, user, hata, girisYap, cikisYap } = useAuth()
+  const { durum, user, hata, girisYap, cikisYap, strict, setStrict } = useAuth()
   const [status, setStatus] = useState<ConfigStatus | null>(null)
   const [email, setEmail] = useState('')
   const [sifre, setSifre] = useState('')
@@ -41,6 +41,13 @@ export function SettingsScreen(): JSX.Element {
             {hata && <div className="set-err">{hata}</div>}
           </div>
         )}
+        <label className="check strict-toggle">
+          <input type="checkbox" checked={strict} onChange={(e) => setStrict(e.target.checked)} />
+          <span>
+            <strong>Katı yetkilendirme modu</strong> — açıkken giriş yapılmadan hiçbir modül
+            kullanılamaz. (Önce Supabase şeması + kullanıcı oluştur, sonra aç.)
+          </span>
+        </label>
       </section>
 
       {/* Bağlantı durumu */}

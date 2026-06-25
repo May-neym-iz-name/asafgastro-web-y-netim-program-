@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-export type Dock = 'right' | 'left' | 'top' | 'bottom'
-
 interface Katalog {
   ad: string
   yol: string
@@ -17,17 +15,15 @@ function load(): Katalog[] {
 }
 
 interface Props {
-  dock: Dock
-  onDockChange: (d: Dock) => void
   onClose: () => void
 }
 
 /**
- * Tedarikçi katalog PDF görüntüleyici. Diskten PDF ekle/sil (liste localStorage'da,
- * dosya yolu tutulur), seçilince base64 data URL olarak iframe'de gösterilir.
- * Sağ/sol/üst/alt dock seçilebilir.
+ * Tedarikçi katalog PDF görüntüleyici — sağdan açılır drawer. Diskten PDF
+ * ekle/sil (liste localStorage'da kalıcı; dosya yolu saklanır), seçilince
+ * base64 data URL olarak iframe'de gösterilir. Fiyat güncellerken yan yana açık tutulur.
  */
-export function CatalogPanel({ dock, onDockChange, onClose }: Props): JSX.Element {
+export function CatalogDrawer({ onClose }: Props): JSX.Element {
   const [kataloglar, setKataloglar] = useState<Katalog[]>(load)
   const [aktif, setAktif] = useState<string | null>(null)
   const [dataUrl, setDataUrl] = useState<string | null>(null)
@@ -65,23 +61,17 @@ export function CatalogPanel({ dock, onDockChange, onClose }: Props): JSX.Elemen
   }
 
   return (
-    <div className={`katalog-panel dock-${dock}`}>
+    <div className="katalog-drawer">
       <div className="katalog-head">
         <strong>📁 Tedarikçi Katalogları</strong>
         <div className="katalog-araclar">
-          <select value={dock} onChange={(e) => onDockChange(e.target.value as Dock)} title="Konum">
-            <option value="right">Sağ</option>
-            <option value="left">Sol</option>
-            <option value="top">Üst</option>
-            <option value="bottom">Alt</option>
-          </select>
-          <button className="btn-mini" onClick={ekle} title="Katalog ekle">＋</button>
+          <button className="btn-mini" onClick={ekle} title="Katalog ekle">＋ Ekle</button>
           <button className="btn-mini" onClick={onClose} title="Kapat">✕</button>
         </div>
       </div>
 
       <div className="katalog-list">
-        {kataloglar.length === 0 && <span className="katalog-bos">Katalog eklemek için ＋</span>}
+        {kataloglar.length === 0 && <span className="katalog-bos">Katalog eklemek için ＋ Ekle</span>}
         {kataloglar.map((k) => (
           <span key={k.yol} className={`katalog-chip ${aktif === k.yol ? 'aktif' : ''}`}>
             <button onClick={() => ac(k)}>{k.ad}</button>
@@ -92,9 +82,7 @@ export function CatalogPanel({ dock, onDockChange, onClose }: Props): JSX.Elemen
 
       <div className="katalog-goruntu">
         {yukleniyor && <div className="katalog-bos">Yükleniyor…</div>}
-        {!yukleniyor && dataUrl && (
-          <iframe title="katalog" src={dataUrl} className="katalog-iframe" />
-        )}
+        {!yukleniyor && dataUrl && <iframe title="katalog" src={dataUrl} className="katalog-iframe" />}
         {!yukleniyor && !dataUrl && <div className="katalog-bos">Görüntülemek için bir katalog seç</div>}
       </div>
     </div>

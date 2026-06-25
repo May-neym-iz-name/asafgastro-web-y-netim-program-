@@ -11,14 +11,19 @@ export interface OturumKullanici {
 
 type Durum = 'loading' | 'anon' | 'authed'
 
+const STRICT_KEY = 'asaf-strict-auth'
+
 interface AuthState {
   durum: Durum
   user: OturumKullanici | null
   hata: string | null
+  /** Katı mod: açıkken giriş yapılmadan hiçbir işlem yapılamaz (B seçeneği). */
+  strict: boolean
   yukle: () => Promise<void>
   girisYap: (email: string, sifre: string) => Promise<boolean>
   cikisYap: () => Promise<void>
-  /** İzin kontrolü. Anonim modda (giriş yapılmamış) geçici tam erişim verir. */
+  setStrict: (v: boolean) => void
+  /** İzin kontrolü. Katı mod kapalıysa anonim kullanıcıya geçici tam erişim verir. */
   izinVar: (izin: Izin) => boolean
 }
 
@@ -26,6 +31,13 @@ export const useAuth = create<AuthState>((set, get) => ({
   durum: 'loading',
   user: null,
   hata: null,
+  strict: (() => {
+    try {
+      return localStorage.getItem(STRICT_KEY) === '1'
+    } catch {
+      return false
+    }
+  })(),
 
   yukle: async () => {
     try {
@@ -53,9 +65,19 @@ export const useAuth = create<AuthState>((set, get) => ({
     set({ durum: 'anon', user: null })
   },
 
+  setStrict: (v) => {
+    try {
+      localStorage.setItem(STRICT_KEY, v ? '1' : '0')
+    } catch {
+      /* yoksay */
+    }
+    set({ strict: v })
+  },
+
   izinVar: (izin) => {
-    const { durum, user } = get()
-    if (durum !== 'authed' || !user) return true // anonim: geçici tam erişim
-    return user.izinler.includes(izin)
+    const { durum, user, strict } = get()
+    if (durum === 'authed' && user) return user.izinler.includes(izin)
+    // Anonim: katı modda hiçbir yetki yok; kapalıyken geçici tam erişim
+    return !strict
   }
 }))

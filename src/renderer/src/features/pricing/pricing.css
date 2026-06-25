@@ -100,52 +100,35 @@
   color: var(--color-danger);
 }
 
-/* ---- Gövde + katalog dock ---- */
-.pricing-body {
-  flex: 1;
-  display: flex;
-  gap: var(--space-3);
-  min-height: 0;
-  overflow: hidden;
-}
-.pricing-body.dock-right {
-  flex-direction: row;
-}
-.pricing-body.dock-left {
-  flex-direction: row-reverse;
-}
-.pricing-body.dock-bottom {
-  flex-direction: column;
-}
-.pricing-body.dock-top {
-  flex-direction: column-reverse;
-}
-
 /* ---- Grid ---- */
 .grid-wrap {
-  flex: 1 1 0;
-  min-width: 0;
+  flex: 1;
   min-height: 0;
   overflow: auto;
   padding: 0;
 }
 
-/* ---- Katalog paneli ---- */
-.katalog-panel {
+/* ---- Katalog: sağdan açılır drawer (grid kullanılabilir kalır) ---- */
+.katalog-drawer {
+  position: fixed;
+  top: var(--topbar-height);
+  right: 0;
+  width: 46vw;
+  min-width: 420px;
+  height: calc(100% - var(--topbar-height));
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-accent-border);
+  box-shadow: -12px 0 30px rgba(234, 88, 12, 0.14);
   display: flex;
   flex-direction: column;
-  background: var(--color-surface);
-  border: 1px solid var(--color-accent-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+  z-index: 30;
+  animation: katalogSlide var(--duration-normal) var(--ease-out);
 }
-.dock-right .katalog-panel,
-.dock-left .katalog-panel {
-  flex: 0 0 42%;
-}
-.dock-top .katalog-panel,
-.dock-bottom .katalog-panel {
-  flex: 0 0 45%;
+@keyframes katalogSlide {
+  from {
+    transform: translateX(40px);
+    opacity: 0;
+  }
 }
 .katalog-head {
   display: flex;
@@ -286,24 +269,48 @@
   margin-left: 3px;
 }
 .cell-input {
-  width: 88px;
-  border: 1px solid transparent;
+  width: 92px;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
-  padding: 5px 6px;
+  padding: 6px 8px;
   font-size: var(--text-sm);
+  font-weight: 600;
   text-align: right;
-  background: var(--color-surface-2);
+  background: #ffffff;
+  color: var(--color-text);
 }
 .cell-input.sm {
-  width: 56px;
+  width: 60px;
 }
 .cell-input:hover {
-  border-color: var(--color-accent-border);
+  border-color: var(--color-accent);
 }
 .cell-input:focus {
   outline: none;
   border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-soft);
+}
+/* Hesaplanan (salt-okunur) hücreler — düzenlenebilir alanlardan ayırt edilsin */
+.grid td.hesap {
+  background: var(--color-surface-sunken);
+  font-weight: 700;
+  color: var(--color-text);
+}
+.pb-select {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 5px 4px;
+  font-size: var(--text-xs);
+  font-weight: 600;
   background: #fff;
+  color: var(--color-text);
+}
+.kaynak-select {
+  font-weight: 700;
+  color: var(--color-accent-deep);
+}
+.grid td.hesap.neg {
+  color: var(--color-danger);
 }
 .empty {
   padding: var(--space-6);

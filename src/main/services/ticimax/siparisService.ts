@@ -62,13 +62,13 @@ export async function selectSiparis(
   filtre: WebSiparisFiltre = {},
   sayfalama: Partial<WebSiparisSayfalama> = {}
 ): Promise<Record<string, unknown>[]> {
+  // Yalnız güvenli -1 (filtre yok) varsayılanları + kullanıcı filtresi.
+  // TedarikciID/UyeID/SiparisID GÖNDERİLMEZ — Ticimax bunları -1 ile bile
+  // tedarikçi/üye-bazlı sorguya yönlendirip "bulunamadı" hatası fırlatabiliyor.
   const f: WebSiparisFiltre = {
     SiparisDurumu: -1,
     OdemeDurumu: -1,
     OdemeTipi: -1,
-    SiparisID: -1,
-    UyeID: -1,
-    TedarikciID: -1,
     EntegrasyonAktarildi: -1,
     ...filtre
   }

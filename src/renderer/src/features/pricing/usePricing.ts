@@ -13,6 +13,13 @@ interface State {
   alisKur: Record<string, number>
   satisKur: Record<string, number>
   toplamUrun: number // Ticimax'teki toplam ürün (sayfalama uyarısı için)
+  markaId: number // 0 = tümü (server filtre)
+  tedarikciId: number // 0 = tümü (server filtre)
+}
+
+interface SecimItem {
+  id: number
+  ad: string
 }
 
 const SAYFA_BOYUTU = 200
@@ -28,13 +35,44 @@ export function usePricing() {
     satisKaynak: 'TCMB',
     alisKur: { TRY: 1 },
     satisKur: { TRY: 1 },
-    toplamUrun: 0
+    toplamUrun: 0,
+    markaId: 0,
+    tedarikciId: 0
   })
   const [secili, setSecili] = useState<Set<number>>(new Set())
+  const [markalar, setMarkalar] = useState<SecimItem[]>([])
+  const [tedarikciler, setTedarikciler] = useState<SecimItem[]>([])
+
+  // Marka + tedarikçi listeleri (filtre dropdownları için, bir kez)
+  useEffect(() => {
+    window.api.ticimax.selectMarka().then((r) => {
+      if (r.ok)
+        setMarkalar(
+          (r.data ?? []).map((m) => {
+            const x = m as Record<string, unknown>
+            return { id: Number(x.ID), ad: String(x.Tanim ?? '') }
+          })
+        )
+    })
+    window.api.ticimax.selectTedarikci().then((r) => {
+      if (r.ok)
+        setTedarikciler(
+          (r.data ?? []).map((t) => {
+            const x = t as Record<string, unknown>
+            return { id: Number(x.ID), ad: String(x.Tanim ?? '') }
+          })
+        )
+    })
+  }, [])
 
   const load = useCallback(
-    async (alisKaynak: FxKaynak, satisKaynak: FxKaynak) => {
+    async (alisKaynak: FxKaynak, satisKaynak: FxKaynak, markaId = 0, tedarikciId = 0) => {
       setState((s) => ({ ...s, loading: true, error: null }))
+      const urunFiltre = {
+        Aktif: -1,
+        ...(markaId ? { MarkaID: markaId } : {}),
+        ...(tedarikciId ? { TedarikciID: tedarikciId } : {})
+      }
       try {
         const [alisRes, satisRes] = await Promise.all([
           window.api.fx.getRates(alisKaynak, FX_KODLAR),
@@ -53,11 +91,13 @@ export function usePricing() {
         }
 
         const [urunRes, countRes] = await Promise.all([
-          window.api.ticimax.selectUrun(
-            { Aktif: -1 },
-            { BaslangicIndex: 0, KayitSayisi: SAYFA_BOYUTU, SiralamaDegeri: 'ID', SiralamaYonu: 'DESC' }
-          ),
-          window.api.ticimax.selectUrunCount({ Aktif: -1 })
+          window.api.ticimax.selectUrun(urunFiltre, {
+            BaslangicIndex: 0,
+            KayitSayisi: SAYFA_BOYUTU,
+            SiralamaDegeri: 'ID',
+            SiralamaYonu: 'DESC'
+          }),
+          window.api.ticimax.selectUrunCount(urunFiltre)
         ])
         if (!urunRes.ok) throw new Error(urunRes.error ?? 'Ürünler alınamadı')
 
@@ -70,7 +110,9 @@ export function usePricing() {
           satisKaynak,
           alisKur,
           satisKur,
-          toplamUrun: countRes.ok ? (countRes.data ?? rows.length) : rows.length
+          toplamUrun: countRes.ok ? (countRes.data ?? rows.length) : rows.length,
+          markaId,
+          tedarikciId
         })
       } catch (e) {
         setState((s) => ({ ...s, loading: false, error: e instanceof Error ? e.message : String(e) }))
@@ -121,6 +163,19 @@ export function usePricing() {
     [secili]
   )
 
+  /** Seçili satırlara toplu para birimi uygular (alış veya satış). */
+  const topluParaBirimi = useCallback(
+    (alan: 'tedarikciParaBirimi' | 'satisParaBirimi', kod: string) => {
+      setState((s) => ({
+        ...s,
+        rows: s.rows.map((r) =>
+          secili.has(r.varyasyonId) ? editRowFn(r, { [alan]: kod }, s.alisKur, s.satisKur) : r
+        )
+      }))
+    },
+    [secili]
+  )
+
   const dirtyRows = useMemo(() => state.rows.filter((r) => r.dirty), [state.rows])
 
   const markSaved = useCallback(() => {
@@ -128,21 +183,31 @@ export function usePricing() {
   }, [])
 
   const setKaynak = useCallback(
-    (alis: FxKaynak, satis: FxKaynak) => load(alis, satis),
-    [load]
+    (alis: FxKaynak, satis: FxKaynak) => load(alis, satis, state.markaId, state.tedarikciId),
+    [load, state.markaId, state.tedarikciId]
+  )
+
+  const setFiltre = useCallback(
+    (markaId: number, tedarikciId: number) =>
+      load(state.alisKaynak, state.satisKaynak, markaId, tedarikciId),
+    [load, state.alisKaynak, state.satisKaynak]
   )
 
   return {
     ...state,
     secili,
     setSecili,
+    markalar,
+    tedarikciler,
     editRow,
     topluIskonto,
     topluKar,
+    topluParaBirimi,
     dirtyRows,
     markSaved,
-    reload: () => load(state.alisKaynak, state.satisKaynak),
+    reload: () => load(state.alisKaynak, state.satisKaynak, state.markaId, state.tedarikciId),
     setKaynak,
+    setFiltre,
     recompute
   }
 }

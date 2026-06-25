@@ -149,6 +149,11 @@
   font-size: var(--text-xs);
   font-weight: 600;
 }
+.auth-banner.strict {
+  background: #fef2f2;
+  color: #991b1b;
+  border-bottom-color: #fca5a5;
+}
 
 .content {
   flex: 1;

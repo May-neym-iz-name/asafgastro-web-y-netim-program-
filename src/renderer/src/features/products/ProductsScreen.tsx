@@ -179,6 +179,35 @@ export function ProductsScreen(): JSX.Element {
         </section>
 
         <section className="card prod-section">
+          <h2>SEO & Site-içi Arama</h2>
+          <div className="field">
+            <label>Ön Yazı (ürün üstü kısa metin)</label>
+            <input value={form.onYazi} onChange={(e) => set('onYazi', e.target.value)} />
+          </div>
+          <div className="field">
+            <label>Site-içi Arama Anahtar Kelimeleri (virgülle)</label>
+            <input value={form.aramaAnahtarKelime} onChange={(e) => set('aramaAnahtarKelime', e.target.value)} />
+          </div>
+          <div className="field">
+            <label>SEO Sayfa Başlığı</label>
+            <input value={form.seoSayfaBaslik} onChange={(e) => set('seoSayfaBaslik', e.target.value)} />
+          </div>
+          <div className="field">
+            <label>SEO Sayfa Açıklaması</label>
+            <textarea rows={2} value={form.seoSayfaAciklama} onChange={(e) => set('seoSayfaAciklama', e.target.value)} />
+          </div>
+          <div className="field">
+            <label>SEO Anahtar Kelimeleri (meta keywords)</label>
+            <input value={form.seoAnahtarKelime} onChange={(e) => set('seoAnahtarKelime', e.target.value)} />
+          </div>
+          <div className="row3">
+            <label className="check"><input type="checkbox" checked={form.vitrin} onChange={(e) => set('vitrin', e.target.checked)} /> Vitrinde göster</label>
+            <label className="check"><input type="checkbox" checked={form.yeniUrun} onChange={(e) => set('yeniUrun', e.target.checked)} /> Yeni ürün</label>
+            <label className="check"><input type="checkbox" checked={form.ucretsizKargo} onChange={(e) => set('ucretsizKargo', e.target.checked)} /> Ücretsiz kargo</label>
+          </div>
+        </section>
+
+        <section className="card prod-section">
           <h2>Görseller</h2>
           <input type="file" accept="image/*" multiple onChange={gorselSec} />
           <div className="gorsel-onizleme">

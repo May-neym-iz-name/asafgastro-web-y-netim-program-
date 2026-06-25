@@ -27,6 +27,7 @@
   flex-direction: column;
   gap: 4px;
   margin-bottom: var(--space-3);
+  min-width: 0; /* grid item taşmasını engeller */
 }
 .field label,
 .sub {
@@ -49,6 +50,12 @@
   padding: 8px 10px;
   font-size: var(--text-sm);
   background: var(--color-surface);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.field select {
+  text-overflow: ellipsis;
 }
 .field input:focus,
 .field select:focus,

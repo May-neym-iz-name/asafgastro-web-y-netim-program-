@@ -38,6 +38,16 @@ export interface UrunFormState {
   teknik: TeknikSatir[]
   // görseller (base64)
   gorseller: string[]
+  // SEO & site-içi arama
+  onYazi: string
+  aramaAnahtarKelime: string
+  seoSayfaBaslik: string
+  seoSayfaAciklama: string
+  seoAnahtarKelime: string
+  // bayraklar
+  vitrin: boolean
+  yeniUrun: boolean
+  ucretsizKargo: boolean
 }
 
 export const BOS_FORM: UrunFormState = {
@@ -56,7 +66,15 @@ export const BOS_FORM: UrunFormState = {
   giris: '',
   ozellikler: [{ id: yeniId(), deger: '' }],
   teknik: [{ id: yeniId(), etiket: '', deger: '' }],
-  gorseller: []
+  gorseller: [],
+  onYazi: '',
+  aramaAnahtarKelime: '',
+  seoSayfaBaslik: '',
+  seoSayfaAciklama: '',
+  seoAnahtarKelime: '',
+  vitrin: false,
+  yeniUrun: false,
+  ucretsizKargo: false
 }
 
 export function useProductForm() {

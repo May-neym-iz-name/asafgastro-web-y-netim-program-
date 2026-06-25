@@ -29,7 +29,14 @@ export function buildProductPayload(
     TedarikciKodu: form.stokKodu || `AG-${Date.now()}`,
     Resimler: form.gorseller,
     SatisBirimi: form.satisBirimi || 'Adet',
-    UcretsizKargo: false,
+    UcretsizKargo: form.ucretsizKargo,
+    Vitrin: form.vitrin,
+    YeniUrun: form.yeniUrun,
+    OnYazi: form.onYazi,
+    AramaAnahtarKelime: form.aramaAnahtarKelime,
+    SeoSayfaBaslik: form.seoSayfaBaslik,
+    SeoSayfaAciklama: form.seoSayfaAciklama,
+    SeoAnahtarKelime: form.seoAnahtarKelime,
     Varyasyonlar: {
       Varyasyon: [
         {
