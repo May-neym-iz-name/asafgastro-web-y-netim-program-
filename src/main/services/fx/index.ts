@@ -2,7 +2,7 @@ import type { FxKaynak, FxKur } from '@shared/domain'
 import { tcmbRates } from './tcmb'
 import { denizbankRates } from './denizbank'
 
-export * from './calc'
+export * from '@shared/calc'
 
 /**
  * Döviz kuru registry'si. Alış ve satış için ayrı kaynak (TCMB/DenizBank)

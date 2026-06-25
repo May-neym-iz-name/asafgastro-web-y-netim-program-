@@ -22,6 +22,12 @@ const api = {
       ipcRenderer.invoke(IPC.ticimax.selectUrunCount, filtre),
     selectParaBirimi: (): Promise<IpcResult<unknown[]>> =>
       ipcRenderer.invoke(IPC.ticimax.selectParaBirimi),
+    saveUrun: (
+      urunKartlari: unknown[],
+      ukAyar: unknown,
+      vAyar: unknown
+    ): Promise<IpcResult<{ ok: boolean; raw: unknown }>> =>
+      ipcRenderer.invoke(IPC.ticimax.saveUrun, urunKartlari, ukAyar, vAyar),
     selectSiparis: (filtre?: unknown, sayfalama?: unknown): Promise<IpcResult<unknown[]>> =>
       ipcRenderer.invoke(IPC.ticimax.selectSiparis, filtre, sayfalama)
   },

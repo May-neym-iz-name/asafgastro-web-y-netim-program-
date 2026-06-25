@@ -43,6 +43,13 @@ export function registerIpcHandlers(): void {
     ticimax.selectUrunCount((filtre ?? {}) as UrunFiltre)
   )
   handle(IPC.ticimax.selectParaBirimi, () => ticimax.selectParaBirimi())
+  handle(IPC.ticimax.saveUrun, (urunKartlari, ukAyar, vAyar) =>
+    ticimax.saveUrun(
+      (urunKartlari ?? []) as Parameters<typeof ticimax.saveUrun>[0],
+      (ukAyar ?? {}) as Parameters<typeof ticimax.saveUrun>[1],
+      (vAyar ?? {}) as Parameters<typeof ticimax.saveUrun>[2]
+    )
+  )
   handle(IPC.ticimax.selectSiparis, (filtre, sayfalama) =>
     ticimax.selectSiparis(
       (filtre ?? {}) as WebSiparisFiltre,
