@@ -61,6 +61,12 @@ export function registerIpcHandlers(): void {
       (sayfalama ?? {}) as Record<string, never>
     )
   )
+  handle(IPC.ticimax.setSiparisDurum, (params) =>
+    ticimax.setSiparisDurum(params as Parameters<typeof ticimax.setSiparisDurum>[0])
+  )
+  handle(IPC.ticimax.saveKargoTakipNo, (params) =>
+    ticimax.saveKargoTakipNo(params as Parameters<typeof ticimax.saveKargoTakipNo>[0])
+  )
 
   // --- UPS Kargo ---
   handle(IPC.ups.createShipment, (girdi) => ups.createShipment(girdi as GonderiGirdi))

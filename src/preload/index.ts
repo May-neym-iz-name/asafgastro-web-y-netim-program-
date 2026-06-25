@@ -34,7 +34,11 @@ const api = {
     ): Promise<IpcResult<{ ok: boolean; raw: unknown }>> =>
       ipcRenderer.invoke(IPC.ticimax.saveUrun, urunKartlari, ukAyar, vAyar),
     selectSiparis: (filtre?: unknown, sayfalama?: unknown): Promise<IpcResult<unknown[]>> =>
-      ipcRenderer.invoke(IPC.ticimax.selectSiparis, filtre, sayfalama)
+      ipcRenderer.invoke(IPC.ticimax.selectSiparis, filtre, sayfalama),
+    setSiparisDurum: (params: unknown): Promise<IpcResult<{ ok: boolean; raw: unknown }>> =>
+      ipcRenderer.invoke(IPC.ticimax.setSiparisDurum, params),
+    saveKargoTakipNo: (params: unknown): Promise<IpcResult<{ ok: boolean; raw: unknown }>> =>
+      ipcRenderer.invoke(IPC.ticimax.saveKargoTakipNo, params)
   },
   ups: {
     track: (trackingNo: string): Promise<IpcResult<unknown>> =>
