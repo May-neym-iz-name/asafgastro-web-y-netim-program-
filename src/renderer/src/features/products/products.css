@@ -12,6 +12,25 @@
   gap: var(--space-4);
   padding-right: var(--space-2);
 }
+.prod-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.prod-tabs button {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-accent-border);
+}
+.prod-tabs button.active {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-strong) 100%);
+  color: #fff;
+  border-color: transparent;
+}
 .prod-section {
   padding: var(--space-5);
 }

@@ -57,7 +57,16 @@ export function useSiparis() {
       if (!res.ok) throw new Error(res.error ?? 'Siparişler alınamadı')
       setRows(((res.data ?? []) as Record<string, unknown>[]).map(mapSiparis))
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e))
+      const msg = e instanceof Error ? e.message : String(e)
+      // Ticimax web servis anahtarı tedarikçi-kapsamlı ise SelectSiparis hata fırlatır
+      if (msg.includes('Tedarikçiye bağlı sipariş')) {
+        setError(
+          'Ticimax web servis anahtarınız sipariş listelemeye yetkili değil (tedarikçi-kapsamlı hesap). ' +
+            'Ticimax paneli → Entegrasyon/Web Servis bölümünden anahtarı mağaza/admin hesabına bağlı, tam sipariş yetkili olacak şekilde düzenleyin (veya Ticimax destekten talep edin). Düzelince modül kendiliğinden çalışır.'
+        )
+      } else {
+        setError(msg)
+      }
     } finally {
       setLoading(false)
     }

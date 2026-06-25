@@ -7,6 +7,7 @@ import { OrdersScreen } from '@renderer/features/orders/OrdersScreen'
 import { ShippingScreen } from '@renderer/features/shipping/ShippingScreen'
 import { SettingsScreen } from '@renderer/features/settings/SettingsScreen'
 import { useAuth } from '@renderer/stores/authStore'
+import { FindBar } from '@renderer/components/ui/FindBar'
 import type { ConfigStatus } from '@shared/ipc'
 
 const SCREENS: Record<string, () => JSX.Element> = {
@@ -21,6 +22,7 @@ export function AppShell(): JSX.Element {
   const [activeId, setActiveId] = useState<string>('pricing')
   const [version, setVersion] = useState<string>('')
   const [status, setStatus] = useState<ConfigStatus | null>(null)
+  const [menuAcik, setMenuAcik] = useState(true)
   const { user, izinVar, yukle, durum, strict } = useAuth()
 
   useEffect(() => {
@@ -39,7 +41,8 @@ export function AppShell(): JSX.Element {
   const Screen = SCREENS[active.id] ?? PricingScreen
 
   return (
-    <div className="shell">
+    <div className={`shell ${menuAcik ? '' : 'menu-kapali'}`}>
+      <FindBar />
       <aside className="sidebar">
         <div className="brand">
           <div className="brand-mark">AG</div>
@@ -72,6 +75,9 @@ export function AppShell(): JSX.Element {
 
       <div className="main">
         <header className="topbar">
+          <button className="menu-toggle" onClick={() => setMenuAcik((v) => !v)} title="Menüyü aç/kapat">
+            ☰
+          </button>
           <div className="topbar-title">{active.etiket}</div>
           <div className="topbar-status">
             <span className={`status-dot ${status?.ticimax ? 'ok' : 'off'}`}>Ticimax</span>

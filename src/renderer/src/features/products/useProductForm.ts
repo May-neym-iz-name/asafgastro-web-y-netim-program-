@@ -48,6 +48,19 @@ export interface UrunFormState {
   vitrin: boolean
   yeniUrun: boolean
   ucretsizKargo: boolean
+  firsatUrunu: boolean
+  seoNoIndex: boolean
+  seoNoFollow: boolean
+  // gelişmiş
+  maksTaksitSayisi: string
+  tahminiTeslimSuresi: string
+  uyeAlimMin: string
+  uyeAlimMax: string
+  ozelAlan1: string
+  ozelAlan2: string
+  ozelAlan3: string
+  ozelAlan4: string
+  ozelAlan5: string
 }
 
 export const BOS_FORM: UrunFormState = {
@@ -74,7 +87,19 @@ export const BOS_FORM: UrunFormState = {
   seoAnahtarKelime: '',
   vitrin: false,
   yeniUrun: false,
-  ucretsizKargo: false
+  ucretsizKargo: false,
+  firsatUrunu: false,
+  seoNoIndex: false,
+  seoNoFollow: false,
+  maksTaksitSayisi: '',
+  tahminiTeslimSuresi: '',
+  uyeAlimMin: '',
+  uyeAlimMax: '',
+  ozelAlan1: '',
+  ozelAlan2: '',
+  ozelAlan3: '',
+  ozelAlan4: '',
+  ozelAlan5: ''
 }
 
 export function useProductForm() {

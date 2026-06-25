@@ -9,7 +9,15 @@ const api = {
   app: {
     getVersion: (): Promise<IpcResult<AppVersionInfo>> => ipcRenderer.invoke(IPC.app.getVersion),
     checkForUpdates: (): Promise<IpcResult<string | null>> =>
-      ipcRenderer.invoke(IPC.app.checkForUpdates)
+      ipcRenderer.invoke(IPC.app.checkForUpdates),
+    find: (text: string, options?: { forward?: boolean; findNext?: boolean }): Promise<unknown> =>
+      ipcRenderer.invoke(IPC.app.find, text, options),
+    stopFind: (): Promise<unknown> => ipcRenderer.invoke(IPC.app.stopFind),
+    onFindResult: (cb: (r: { active: number; matches: number }) => void): (() => void) => {
+      const h = (_e: unknown, r: { active: number; matches: number }): void => cb(r)
+      ipcRenderer.on(IPC.app.findResult, h)
+      return () => ipcRenderer.removeListener(IPC.app.findResult, h)
+    }
   },
   config: {
     getStatus: (): Promise<IpcResult<ConfigStatus>> => ipcRenderer.invoke(IPC.config.getStatus)
@@ -60,9 +68,12 @@ const api = {
       ipcRenderer.invoke(IPC.fx.getRates, kaynak, kodlar)
   },
   catalog: {
-    pick: (): Promise<IpcResult<{ ad: string; yol: string }[]>> =>
-      ipcRenderer.invoke(IPC.catalog.pick),
-    read: (yol: string): Promise<IpcResult<string>> => ipcRenderer.invoke(IPC.catalog.read, yol)
+    add: (): Promise<IpcResult<{ id: string; ad: string }[]>> =>
+      ipcRenderer.invoke(IPC.catalog.add),
+    list: (): Promise<IpcResult<{ id: string; ad: string }[]>> =>
+      ipcRenderer.invoke(IPC.catalog.list),
+    read: (id: string): Promise<IpcResult<string>> => ipcRenderer.invoke(IPC.catalog.read, id),
+    delete: (id: string): Promise<IpcResult<null>> => ipcRenderer.invoke(IPC.catalog.delete, id)
   },
   supabase: {
     signIn: (email: string, sifre: string): Promise<IpcResult<unknown>> =>

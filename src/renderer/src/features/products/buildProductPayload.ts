@@ -37,6 +37,18 @@ export function buildProductPayload(
     SeoSayfaBaslik: form.seoSayfaBaslik,
     SeoSayfaAciklama: form.seoSayfaAciklama,
     SeoAnahtarKelime: form.seoAnahtarKelime,
+    SeoNoIndex: form.seoNoIndex,
+    SeoNoFollow: form.seoNoFollow,
+    FirsatUrunu: form.firsatUrunu,
+    ...(form.maksTaksitSayisi ? { MaksTaksitSayisi: Number(form.maksTaksitSayisi) } : {}),
+    ...(form.tahminiTeslimSuresi ? { TahminiTeslimSuresi: Number(form.tahminiTeslimSuresi) } : {}),
+    ...(form.uyeAlimMin ? { UyeAlimMin: Number(form.uyeAlimMin) } : {}),
+    ...(form.uyeAlimMax ? { UyeAlimMax: Number(form.uyeAlimMax) } : {}),
+    OzelAlan1: form.ozelAlan1,
+    OzelAlan2: form.ozelAlan2,
+    OzelAlan3: form.ozelAlan3,
+    OzelAlan4: form.ozelAlan4,
+    OzelAlan5: form.ozelAlan5,
     Varyasyonlar: {
       Varyasyon: [
         {

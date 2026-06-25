@@ -1,0 +1,28 @@
+.find-bar {
+  position: fixed;
+  top: 12px;
+  right: 20px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-accent-border);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-lg);
+  padding: 6px 10px;
+  animation: fade var(--duration-fast) var(--ease-out);
+}
+.find-bar input {
+  border: none;
+  outline: none;
+  font-size: var(--text-sm);
+  width: 180px;
+  background: transparent;
+}
+.find-count {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  min-width: 38px;
+  text-align: center;
+}

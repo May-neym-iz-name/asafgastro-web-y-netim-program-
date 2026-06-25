@@ -18,6 +18,15 @@ body {
   color: var(--color-text);
   background: var(--color-bg);
   -webkit-font-smoothing: antialiased;
+}
+
+/* İçerik metni seçilebilir/kopyalanabilir; yalnız UI iskeleti (menü/buton/başlık)
+   seçimi devre dışı bırakır. */
+.sidebar,
+.topbar,
+button,
+.nav-item,
+.grid thead th {
   user-select: none;
 }
 

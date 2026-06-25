@@ -1,11 +1,20 @@
 import { ipcMain, app, dialog, BrowserWindow } from 'electron'
-import { readFile } from 'fs/promises'
-import { basename } from 'path'
+import { readFile, copyFile, readdir, unlink, mkdir } from 'fs/promises'
+import { basename, join } from 'path'
 import { IPC, type IpcResult } from '@shared/ipc'
 
-/** catalog.pick ile eklenen PDF yolları — catalog.read yalnız bunları okur (path traversal koruması). */
-const katalogIzinliYollar = new Set<string>()
 const MAKS_KATALOG_BYTE = 60 * 1024 * 1024 // 60 MB
+
+/** Kataloglar uygulama veri klasöründe saklanır: userData/catalogs */
+function catalogDir(): string {
+  return join(app.getPath('userData'), 'catalogs')
+}
+/** id (dosya adı) güvenliği: yalnız basename + .pdf (path traversal koruması). */
+function guvenliKatalogId(id: string): string {
+  const ad = basename(String(id))
+  if (ad !== String(id) || !/\.pdf$/i.test(ad)) throw new Error('Geçersiz katalog adı')
+  return ad
+}
 import { getConfigStatus } from '../config'
 import { checkForUpdates } from '../updater'
 import * as ticimax from '../services/ticimax'
@@ -39,6 +48,21 @@ function handle<T>(channel: string, fn: (...args: unknown[]) => Promise<T> | T):
 export function registerIpcHandlers(): void {
   handle(IPC.app.getVersion, () => ({ version: app.getVersion(), name: app.getName() }))
   handle(IPC.app.checkForUpdates, () => checkForUpdates())
+  handle(IPC.app.find, (text, options) => {
+    const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+    const t = String(text ?? '')
+    if (!t) {
+      win?.webContents.stopFindInPage('clearSelection')
+      return null
+    }
+    win?.webContents.findInPage(t, (options ?? {}) as Electron.FindInPageOptions)
+    return null
+  })
+  handle(IPC.app.stopFind, () => {
+    const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+    win?.webContents.stopFindInPage('clearSelection')
+    return null
+  })
   handle(IPC.config.getStatus, () => getConfigStatus())
 
   // --- Ticimax (okuma) ---
@@ -85,8 +109,8 @@ export function registerIpcHandlers(): void {
     ups.resolveArea(cityCode as number, query as string)
   )
 
-  // --- Katalog PDF ---
-  handle(IPC.catalog.pick, async () => {
+  // --- Katalog PDF (uygulama klasöründe saklanır) ---
+  handle(IPC.catalog.add, async () => {
     const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
     const result = await dialog.showOpenDialog(win, {
       title: 'Katalog PDF seç',
@@ -94,17 +118,33 @@ export function registerIpcHandlers(): void {
       properties: ['openFile', 'multiSelections']
     })
     if (result.canceled) return []
-    for (const p of result.filePaths) katalogIzinliYollar.add(p)
-    return result.filePaths.map((p) => ({ ad: basename(p), yol: p }))
+    const dir = catalogDir()
+    await mkdir(dir, { recursive: true })
+    const eklenen: { id: string; ad: string }[] = []
+    for (const p of result.filePaths) {
+      const ad = basename(p)
+      await copyFile(p, join(dir, ad)) // uygulama klasörüne kopyala
+      eklenen.push({ id: ad, ad })
+    }
+    return eklenen
   })
-  handle(IPC.catalog.read, async (yol) => {
-    const p = String(yol)
-    // Yalnız diyalogla eklenmiş .pdf yolları okunabilir (path traversal koruması)
-    if (!katalogIzinliYollar.has(p)) throw new Error('Bu dosya katalog seçimiyle eklenmemiş')
-    if (!/\.pdf$/i.test(p)) throw new Error('Yalnız PDF dosyaları okunabilir')
-    const buf = await readFile(p)
+  handle(IPC.catalog.list, async () => {
+    try {
+      const files = await readdir(catalogDir())
+      return files.filter((f) => /\.pdf$/i.test(f)).map((f) => ({ id: f, ad: f }))
+    } catch {
+      return []
+    }
+  })
+  handle(IPC.catalog.read, async (id) => {
+    const ad = guvenliKatalogId(id as string)
+    const buf = await readFile(join(catalogDir(), ad))
     if (buf.byteLength > MAKS_KATALOG_BYTE) throw new Error('Katalog 60 MB sınırını aşıyor')
     return `data:application/pdf;base64,${buf.toString('base64')}`
+  })
+  handle(IPC.catalog.delete, async (id) => {
+    await unlink(join(catalogDir(), guvenliKatalogId(id as string)))
+    return null
   })
 
   // --- Döviz (FX) ---

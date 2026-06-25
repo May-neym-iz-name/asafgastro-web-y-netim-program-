@@ -3,6 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcHandlers } from './ipc'
 import { initAutoUpdater } from './updater'
+import { IPC } from '@shared/ipc'
 
 function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
@@ -25,6 +26,14 @@ function createWindow(): BrowserWindow {
   })
 
   mainWindow.on('ready-to-show', () => mainWindow.show())
+
+  // Ctrl+F arama sonuçlarını renderer'a ilet
+  mainWindow.webContents.on('found-in-page', (_e, result) => {
+    mainWindow.webContents.send(IPC.app.findResult, {
+      active: result.activeMatchOrdinal,
+      matches: result.matches
+    })
+  })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     // Yalnız http/https dış bağlantılar açılır (file:, custom protocol istismarını engeller)

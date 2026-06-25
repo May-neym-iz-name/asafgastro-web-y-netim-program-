@@ -6,7 +6,10 @@
 export const IPC = {
   app: {
     getVersion: 'app:getVersion',
-    checkForUpdates: 'app:checkForUpdates'
+    checkForUpdates: 'app:checkForUpdates',
+    find: 'app:find',
+    stopFind: 'app:stopFind',
+    findResult: 'app:findResult' // main → renderer (event)
   },
   config: {
     getStatus: 'config:getStatus'
@@ -36,8 +39,10 @@ export const IPC = {
     getRates: 'fx:getRates'
   },
   catalog: {
-    pick: 'catalog:pick',
-    read: 'catalog:read'
+    add: 'catalog:add',
+    list: 'catalog:list',
+    read: 'catalog:read',
+    delete: 'catalog:delete'
   },
   supabase: {
     signIn: 'supabase:signIn',

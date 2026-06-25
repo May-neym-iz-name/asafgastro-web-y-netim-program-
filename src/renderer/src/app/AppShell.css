@@ -4,6 +4,28 @@
   grid-template-rows: 100%;
   height: 100%;
   overflow: hidden;
+  transition: grid-template-columns var(--duration-normal) var(--ease-out);
+}
+.shell.menu-kapali {
+  grid-template-columns: 0 1fr;
+}
+.shell.menu-kapali .sidebar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.menu-toggle {
+  font-size: 20px;
+  color: var(--color-accent-deep);
+  padding: 4px 10px;
+  margin-right: var(--space-3);
+  border-radius: var(--radius-sm);
+}
+.menu-toggle:hover {
+  background: var(--color-accent-soft);
+}
+.topbar-title {
+  margin-right: auto;
 }
 
 /* ---- Kenar çubuğu ---- */
@@ -14,6 +36,8 @@
   flex-direction: column;
   padding: var(--space-5) var(--space-3);
   gap: var(--space-2);
+  overflow: hidden;
+  transition: opacity var(--duration-fast) var(--ease-out);
 }
 
 .brand {
