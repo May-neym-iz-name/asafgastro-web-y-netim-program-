@@ -22,6 +22,11 @@ const api = {
       ipcRenderer.invoke(IPC.ticimax.selectUrunCount, filtre),
     selectParaBirimi: (): Promise<IpcResult<unknown[]>> =>
       ipcRenderer.invoke(IPC.ticimax.selectParaBirimi),
+    selectKategori: (kategoriID?: number, parentID?: number): Promise<IpcResult<unknown[]>> =>
+      ipcRenderer.invoke(IPC.ticimax.selectKategori, kategoriID, parentID),
+    selectMarka: (): Promise<IpcResult<unknown[]>> => ipcRenderer.invoke(IPC.ticimax.selectMarka),
+    selectTedarikci: (): Promise<IpcResult<unknown[]>> =>
+      ipcRenderer.invoke(IPC.ticimax.selectTedarikci),
     saveUrun: (
       urunKartlari: unknown[],
       ukAyar: unknown,

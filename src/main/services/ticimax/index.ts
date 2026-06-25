@@ -15,4 +15,12 @@ export {
   type WebSiparisFiltre,
   type WebSiparisSayfalama
 } from './siparisService'
+export {
+  selectKategori,
+  selectMarka,
+  selectTedarikci,
+  type KategoriDto,
+  type MarkaDto,
+  type TedarikciDto
+} from './katalogService'
 export { resetClients } from './client'
