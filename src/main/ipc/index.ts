@@ -5,6 +5,8 @@ import { checkForUpdates } from '../updater'
 import * as ticimax from '../services/ticimax'
 import type { UrunFiltre } from '../services/ticimax'
 import type { WebSiparisFiltre } from '../services/ticimax'
+import * as ups from '../services/ups'
+import type { GonderiGirdi } from '../services/ups'
 
 /** IPC handler'ı tutarlı IpcResult zarfıyla sarmalar. */
 function handle<T>(channel: string, fn: (...args: unknown[]) => Promise<T> | T): void {
@@ -42,5 +44,16 @@ export function registerIpcHandlers(): void {
       (filtre ?? {}) as WebSiparisFiltre,
       (sayfalama ?? {}) as Record<string, never>
     )
+  )
+
+  // --- UPS Kargo ---
+  handle(IPC.ups.createShipment, (girdi) => ups.createShipment(girdi as GonderiGirdi))
+  handle(IPC.ups.cancelShipment, (waybill) => ups.cancelShipment(waybill as string))
+  handle(IPC.ups.track, (trackingNo) => ups.getLastTransaction(trackingNo as string))
+  handle(IPC.ups.listCities, () => ups.listCities())
+  handle(IPC.ups.listDistricts, (cityId) => ups.listDistricts(cityId as number))
+  handle(IPC.ups.listAreas, (cityCode) => ups.listAreas(cityCode as number))
+  handle(IPC.ups.resolveArea, (cityCode, query) =>
+    ups.resolveArea(cityCode as number, query as string)
   )
 }

@@ -22,7 +22,12 @@ export const IPC = {
   },
   ups: {
     createShipment: 'ups:createShipment',
-    track: 'ups:track'
+    cancelShipment: 'ups:cancelShipment',
+    track: 'ups:track',
+    listCities: 'ups:listCities',
+    listDistricts: 'ups:listDistricts',
+    listAreas: 'ups:listAreas',
+    resolveArea: 'ups:resolveArea'
   },
   fx: {
     getRates: 'fx:getRates'

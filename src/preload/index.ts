@@ -24,6 +24,22 @@ const api = {
       ipcRenderer.invoke(IPC.ticimax.selectParaBirimi),
     selectSiparis: (filtre?: unknown, sayfalama?: unknown): Promise<IpcResult<unknown[]>> =>
       ipcRenderer.invoke(IPC.ticimax.selectSiparis, filtre, sayfalama)
+  },
+  ups: {
+    track: (trackingNo: string): Promise<IpcResult<unknown>> =>
+      ipcRenderer.invoke(IPC.ups.track, trackingNo),
+    listCities: (): Promise<IpcResult<{ cityId: number; cityName: string }[]>> =>
+      ipcRenderer.invoke(IPC.ups.listCities),
+    listDistricts: (cityId: number): Promise<IpcResult<unknown[]>> =>
+      ipcRenderer.invoke(IPC.ups.listDistricts, cityId),
+    listAreas: (cityCode: number): Promise<IpcResult<unknown[]>> =>
+      ipcRenderer.invoke(IPC.ups.listAreas, cityCode),
+    resolveArea: (cityCode: number, query: string): Promise<IpcResult<unknown>> =>
+      ipcRenderer.invoke(IPC.ups.resolveArea, cityCode, query),
+    createShipment: (girdi: unknown): Promise<IpcResult<unknown>> =>
+      ipcRenderer.invoke(IPC.ups.createShipment, girdi),
+    cancelShipment: (waybill: string): Promise<IpcResult<unknown>> =>
+      ipcRenderer.invoke(IPC.ups.cancelShipment, waybill)
   }
 }
 
