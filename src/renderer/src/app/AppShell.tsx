@@ -6,6 +6,7 @@ import { PricingScreen } from '@renderer/features/pricing/PricingScreen'
 import { OrdersScreen } from '@renderer/features/orders/OrdersScreen'
 import { ShippingScreen } from '@renderer/features/shipping/ShippingScreen'
 import { SettingsScreen } from '@renderer/features/settings/SettingsScreen'
+import { useAuth } from '@renderer/stores/authStore'
 import type { ConfigStatus } from '@shared/ipc'
 
 const SCREENS: Record<string, () => JSX.Element> = {
@@ -20,6 +21,7 @@ export function AppShell(): JSX.Element {
   const [activeId, setActiveId] = useState<string>('pricing')
   const [version, setVersion] = useState<string>('')
   const [status, setStatus] = useState<ConfigStatus | null>(null)
+  const { user, izinVar, yukle } = useAuth()
 
   useEffect(() => {
     window.api.app.getVersion().then((res) => {
@@ -28,9 +30,12 @@ export function AppShell(): JSX.Element {
     window.api.config.getStatus().then((res) => {
       if (res.ok) setStatus(res.data)
     })
-  }, [])
+    yukle()
+  }, [yukle])
 
-  const active = NAV_MODULES.find((m) => m.id === activeId) ?? NAV_MODULES[0]
+  // İzin bazlı görünür modüller (anonim modda hepsi açık). Ayarlar her zaman görünür.
+  const gorunenModuller = NAV_MODULES.filter((m) => m.id === 'settings' || izinVar(m.izin))
+  const active = gorunenModuller.find((m) => m.id === activeId) ?? gorunenModuller[0]
   const Screen = SCREENS[active.id] ?? PricingScreen
 
   return (
@@ -45,7 +50,7 @@ export function AppShell(): JSX.Element {
         </div>
 
         <nav>
-          {NAV_MODULES.map((m) => (
+          {gorunenModuller.map((m) => (
             <button
               key={m.id}
               className={`nav-item ${m.id === activeId ? 'active' : ''}`}
@@ -59,9 +64,9 @@ export function AppShell(): JSX.Element {
         </nav>
 
         <div className="sidebar-footer">
-          Sürüm v{version || '0.1.0'}
+          {user ? `${user.adSoyad || user.email} · ${user.rol ?? ''}` : 'Giriş yapılmadı'}
           <br />
-          Ticimax + UPS entegre
+          Sürüm v{version || '0.1.0'}
         </div>
       </aside>
 

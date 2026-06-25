@@ -96,4 +96,9 @@ export function registerIpcHandlers(): void {
   )
   handle(IPC.supabase.getFxSettings, () => supabase.getFxSettings())
   handle(IPC.supabase.setFxSettings, (s) => supabase.setFxSettings((s ?? {}) as Partial<FxSettings>))
+  handle(IPC.supabase.listRoles, () => supabase.listRoles())
+  handle(IPC.supabase.listProfiles, () => supabase.listProfiles())
+  handle(IPC.supabase.setUserRole, (userId, roleId) =>
+    supabase.setUserRole(userId as string, roleId as number)
+  )
 }

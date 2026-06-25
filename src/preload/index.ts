@@ -72,7 +72,11 @@ const api = {
     getFxSettings: (): Promise<IpcResult<unknown>> =>
       ipcRenderer.invoke(IPC.supabase.getFxSettings),
     setFxSettings: (s: unknown): Promise<IpcResult<unknown>> =>
-      ipcRenderer.invoke(IPC.supabase.setFxSettings, s)
+      ipcRenderer.invoke(IPC.supabase.setFxSettings, s),
+    listRoles: (): Promise<IpcResult<unknown[]>> => ipcRenderer.invoke(IPC.supabase.listRoles),
+    listProfiles: (): Promise<IpcResult<unknown[]>> => ipcRenderer.invoke(IPC.supabase.listProfiles),
+    setUserRole: (userId: string, roleId: number): Promise<IpcResult<unknown>> =>
+      ipcRenderer.invoke(IPC.supabase.setUserRole, userId, roleId)
   }
 }
 

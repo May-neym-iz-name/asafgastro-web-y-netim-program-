@@ -6,6 +6,11 @@ export {
   getFxSettings,
   setFxSettings,
   logAudit,
+  listRoles,
+  listProfiles,
+  setUserRole,
   type SupplierPrice,
-  type FxSettings
+  type FxSettings,
+  type RolDto,
+  type ProfilDto
 } from './repo'

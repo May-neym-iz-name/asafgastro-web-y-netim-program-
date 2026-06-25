@@ -42,7 +42,10 @@ export const IPC = {
     listSupplierPrices: 'supabase:listSupplierPrices',
     upsertSupplierPrices: 'supabase:upsertSupplierPrices',
     getFxSettings: 'supabase:getFxSettings',
-    setFxSettings: 'supabase:setFxSettings'
+    setFxSettings: 'supabase:setFxSettings',
+    listRoles: 'supabase:listRoles',
+    listProfiles: 'supabase:listProfiles',
+    setUserRole: 'supabase:setUserRole'
   }
 } as const
 
