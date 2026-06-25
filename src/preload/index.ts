@@ -44,6 +44,20 @@ const api = {
   fx: {
     getRates: (kaynak?: string, kodlar?: string[]): Promise<IpcResult<unknown[]>> =>
       ipcRenderer.invoke(IPC.fx.getRates, kaynak, kodlar)
+  },
+  supabase: {
+    signIn: (email: string, sifre: string): Promise<IpcResult<unknown>> =>
+      ipcRenderer.invoke(IPC.supabase.signIn, email, sifre),
+    signOut: (): Promise<IpcResult<unknown>> => ipcRenderer.invoke(IPC.supabase.signOut),
+    currentUser: (): Promise<IpcResult<unknown>> => ipcRenderer.invoke(IPC.supabase.currentUser),
+    listSupplierPrices: (): Promise<IpcResult<unknown[]>> =>
+      ipcRenderer.invoke(IPC.supabase.listSupplierPrices),
+    upsertSupplierPrices: (rows: unknown[]): Promise<IpcResult<number>> =>
+      ipcRenderer.invoke(IPC.supabase.upsertSupplierPrices, rows),
+    getFxSettings: (): Promise<IpcResult<unknown>> =>
+      ipcRenderer.invoke(IPC.supabase.getFxSettings),
+    setFxSettings: (s: unknown): Promise<IpcResult<unknown>> =>
+      ipcRenderer.invoke(IPC.supabase.setFxSettings, s)
   }
 }
 

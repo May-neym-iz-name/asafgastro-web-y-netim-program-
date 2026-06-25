@@ -9,6 +9,8 @@ import * as ups from '../services/ups'
 import type { GonderiGirdi } from '../services/ups'
 import { getRates } from '../services/fx'
 import type { FxKaynak } from '@shared/domain'
+import * as supabase from '../services/supabase'
+import type { SupplierPrice, FxSettings } from '../services/supabase'
 
 /** IPC handler'ı tutarlı IpcResult zarfıyla sarmalar. */
 function handle<T>(channel: string, fn: (...args: unknown[]) => Promise<T> | T): void {
@@ -63,4 +65,17 @@ export function registerIpcHandlers(): void {
   handle(IPC.fx.getRates, (kaynak, kodlar) =>
     getRates((kaynak ?? 'TCMB') as FxKaynak, (kodlar ?? ['USD', 'EUR']) as string[])
   )
+
+  // --- Supabase (auth + senkron) ---
+  handle(IPC.supabase.signIn, (email, sifre) =>
+    supabase.signIn(email as string, sifre as string)
+  )
+  handle(IPC.supabase.signOut, () => supabase.signOut())
+  handle(IPC.supabase.currentUser, () => supabase.currentUser())
+  handle(IPC.supabase.listSupplierPrices, () => supabase.listSupplierPrices())
+  handle(IPC.supabase.upsertSupplierPrices, (rows) =>
+    supabase.upsertSupplierPrices((rows ?? []) as SupplierPrice[])
+  )
+  handle(IPC.supabase.getFxSettings, () => supabase.getFxSettings())
+  handle(IPC.supabase.setFxSettings, (s) => supabase.setFxSettings((s ?? {}) as Partial<FxSettings>))
 }

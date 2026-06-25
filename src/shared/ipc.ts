@@ -31,6 +31,15 @@ export const IPC = {
   },
   fx: {
     getRates: 'fx:getRates'
+  },
+  supabase: {
+    signIn: 'supabase:signIn',
+    signOut: 'supabase:signOut',
+    currentUser: 'supabase:currentUser',
+    listSupplierPrices: 'supabase:listSupplierPrices',
+    upsertSupplierPrices: 'supabase:upsertSupplierPrices',
+    getFxSettings: 'supabase:getFxSettings',
+    setFxSettings: 'supabase:setFxSettings'
   }
 } as const
 
