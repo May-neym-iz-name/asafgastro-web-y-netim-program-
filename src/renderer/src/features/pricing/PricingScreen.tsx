@@ -170,10 +170,18 @@ export function PricingScreen(): JSX.Element {
       {saveMsg && <div className="pricing-msg">{saveMsg}</div>}
       {p.error && <div className="pricing-msg err">Hata: {p.error}</div>}
       {p.loading && <div className="pricing-msg">Canlı ürünler ve kurlar yükleniyor…</div>}
+      {!p.loading && (
+        <div className="pricing-sayac">
+          {gorunen.length} satır gösteriliyor
+          {(markaFiltre > 0 || tedarikciFiltre > 0 || urunAdiFiltre || stokKoduFiltre) && ' (filtreli)'}
+          {' · '}yüklü {p.rows.length} / toplam {p.toplamUrun}
+        </div>
+      )}
       {!p.loading && p.toplamUrun > p.rows.length && (
         <div className="pricing-msg">⚠️ Toplam {p.toplamUrun} üründen ilk {p.rows.length} tanesi yüklendi. Marka/tedarikçiyle daralt.</div>
       )}
 
+      <div className={`pricing-body ${katalogAcik ? 'katalog-acik' : ''}`}>
       <div className="grid-wrap card">
         <table className="grid">
           <thead>
@@ -212,8 +220,8 @@ export function PricingScreen(): JSX.Element {
           </tbody>
         </table>
       </div>
-
-      {katalogAcik && <CatalogDrawer onClose={() => setKatalogAcik(false)} />}
+        {katalogAcik && <CatalogDrawer onClose={() => setKatalogAcik(false)} />}
+      </div>
 
       {showSave && (
         <SaveConfirmModal dirtyCount={p.dirtyRows.length} onConfirm={handleSave} onCancel={() => setShowSave(false)} />

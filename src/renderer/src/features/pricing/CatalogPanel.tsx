@@ -18,8 +18,9 @@ interface Props {
 export function CatalogDrawer({ onClose }: Props): JSX.Element {
   const [kataloglar, setKataloglar] = useState<Katalog[]>([])
   const [seciliId, setSeciliId] = useState<string>('')
-  const [dataUrl, setDataUrl] = useState<string | null>(null)
-  const [yukleniyor, setYukleniyor] = useState(false)
+
+  // PDF, base64 yerine güvenli özel protokolle stream edilir (boyut limiti yok)
+  const pdfSrc = seciliId ? `safepdf://katalog/${encodeURIComponent(seciliId)}` : null
 
   async function listele(): Promise<void> {
     const res = await window.api.catalog.list()
@@ -33,21 +34,8 @@ export function CatalogDrawer({ onClose }: Props): JSX.Element {
     const res = await window.api.catalog.add()
     if (res.ok && res.data?.length) {
       await listele()
-      const ilk = res.data[0] as Katalog
-      sec(ilk.id)
+      setSeciliId((res.data[0] as Katalog).id)
     }
-  }
-
-  async function sec(id: string): Promise<void> {
-    setSeciliId(id)
-    if (!id) {
-      setDataUrl(null)
-      return
-    }
-    setYukleniyor(true)
-    const res = await window.api.catalog.read(id)
-    setDataUrl(res.ok ? (res.data as string) : null)
-    setYukleniyor(false)
   }
 
   async function sil(): Promise<void> {
@@ -55,7 +43,6 @@ export function CatalogDrawer({ onClose }: Props): JSX.Element {
     if (!window.confirm(`"${seciliId}" katalogu silinsin mi?`)) return
     await window.api.catalog.delete(seciliId)
     setSeciliId('')
-    setDataUrl(null)
     listele()
   }
 
@@ -67,7 +54,7 @@ export function CatalogDrawer({ onClose }: Props): JSX.Element {
       </div>
 
       <div className="katalog-arac-satir">
-        <select className="katalog-select" value={seciliId} onChange={(e) => sec(e.target.value)}>
+        <select className="katalog-select" value={seciliId} onChange={(e) => setSeciliId(e.target.value)}>
           <option value="">Katalog seç…</option>
           {kataloglar.map((k) => (
             <option key={k.id} value={k.id}>{k.ad}</option>
@@ -78,9 +65,9 @@ export function CatalogDrawer({ onClose }: Props): JSX.Element {
       </div>
 
       <div className="katalog-goruntu">
-        {yukleniyor && <div className="katalog-bos">Yükleniyor…</div>}
-        {!yukleniyor && dataUrl && <iframe title="katalog" src={dataUrl} className="katalog-iframe" />}
-        {!yukleniyor && !dataUrl && (
+        {pdfSrc ? (
+          <iframe title="katalog" src={pdfSrc} className="katalog-iframe" />
+        ) : (
           <div className="katalog-bos">
             {kataloglar.length ? 'Görüntülemek için bir katalog seç' : 'Katalog eklemek için ＋ Ekle'}
           </div>

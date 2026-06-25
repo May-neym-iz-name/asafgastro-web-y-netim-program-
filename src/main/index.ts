@@ -1,9 +1,30 @@
-import { app, shell, BrowserWindow } from 'electron'
-import { join } from 'path'
+import { app, shell, BrowserWindow, protocol, net } from 'electron'
+import { join, basename } from 'path'
+import { pathToFileURL } from 'url'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcHandlers } from './ipc'
 import { initAutoUpdater } from './updater'
 import { IPC } from '@shared/ipc'
+
+// Katalog PDF'leri için güvenli özel protokol (base64/data-URL limiti olmadan stream eder)
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'safepdf', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } }
+])
+
+function registerCatalogProtocol(): void {
+  protocol.handle('safepdf', async (request) => {
+    try {
+      const url = new URL(request.url) // safepdf://katalog/<dosya.pdf>
+      const id = decodeURIComponent(url.pathname.replace(/^\/+/, ''))
+      const ad = basename(id)
+      if (ad !== id || !/\.pdf$/i.test(ad)) return new Response('Geçersiz', { status: 400 })
+      const dosya = join(app.getPath('userData'), 'catalogs', ad)
+      return net.fetch(pathToFileURL(dosya).toString())
+    } catch {
+      return new Response('Bulunamadı', { status: 404 })
+    }
+  })
+}
 
 function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
@@ -64,6 +85,7 @@ app.whenReady().then(() => {
   })
 
   registerIpcHandlers()
+  registerCatalogProtocol()
 
   const win = createWindow()
 
