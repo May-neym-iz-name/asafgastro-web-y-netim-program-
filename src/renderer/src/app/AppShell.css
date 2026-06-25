@@ -1,0 +1,148 @@
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ---- Kenar çubuğu ---- */
+.sidebar {
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-surface-2) 100%);
+  border-right: 1px solid var(--color-accent-border);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-5) var(--space-3);
+  gap: var(--space-2);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-2) var(--space-5);
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-deep) 100%);
+  display: grid;
+  place-items: center;
+  color: var(--color-on-accent);
+  font-weight: 800;
+  font-size: var(--text-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.brand-text strong {
+  display: block;
+  font-size: var(--text-base);
+  color: var(--color-accent-deep);
+  line-height: 1.1;
+}
+.brand-text span {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  text-align: left;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+.nav-item:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+  transform: translateX(2px);
+}
+.nav-item .nav-ikon {
+  font-size: var(--text-lg);
+}
+.nav-item.active {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-strong) 100%);
+  color: var(--color-on-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: var(--space-3) var(--space-2) 0;
+  border-top: 1px solid var(--color-accent-border);
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+}
+
+/* ---- Ana alan ---- */
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.topbar {
+  height: var(--topbar-height);
+  flex-shrink: 0;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-accent-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-5);
+}
+
+.topbar-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-accent-deep);
+}
+
+.topbar-status {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+}
+.status-dot::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-text-faint);
+}
+.status-dot.ok::before {
+  background: var(--color-success);
+}
+.status-dot.off::before {
+  background: var(--color-danger);
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-6);
+}

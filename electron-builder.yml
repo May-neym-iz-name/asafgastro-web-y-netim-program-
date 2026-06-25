@@ -1,0 +1,41 @@
+appId: com.asafgastro.webyonetim
+productName: Asaf Gastro Web Yönetim
+copyright: Copyright © 2026 Asaf Gastro
+
+directories:
+  buildResources: build
+  output: release/${version}
+
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.env,.env.*,.eslintignore,.eslintrc.*,.prettier*,tsconfig*.json}'
+  - '!{README.md,MEMORY.md}'
+  - '!supabase/*'
+
+extraResources:
+  - from: resources/data
+    to: data
+    filter: ['**/*.json']
+
+asarUnpack:
+  - resources/**
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  artifactName: ${productName}-${version}-setup.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+
+# Sürüm güncelleme: GitHub Releases
+publish:
+  provider: github
+  owner: May-neym-iz-name
+  repo: asafgastro-web-y-netim-program-

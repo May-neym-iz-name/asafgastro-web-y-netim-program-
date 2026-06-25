@@ -1,0 +1,42 @@
+# Bağımlılıklar
+node_modules/
+
+# Build çıktıları
+out/
+dist/
+release/
+*.tsbuildinfo
+
+# Ortam / sırlar (ASLA commit edilmez)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Yerel veritabanı / cache
+*.sqlite
+*.sqlite-journal
+*.db
+
+# Editör / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Kaynak doküman dosyaları (uygulama koduna ait değil — orijinalleri ayrı klasörlerde)
+*.pdf
+*.zip
+*.xls
+*.xlsx
+
+# Loglar
+*.log
+npm-debug.log*
+
+# Supabase yerel
+supabase/.temp/
+supabase/.branches/

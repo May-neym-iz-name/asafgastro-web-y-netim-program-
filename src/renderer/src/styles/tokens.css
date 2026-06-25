@@ -1,0 +1,63 @@
+/* Asaf Gastro tasarım token'ları — marka turuncu paleti (mevcut ürün
+   açıklama şablonlarıyla tutarlı: bg #fff7ed, vurgu #c2410c / #f97316). */
+:root {
+  /* Yüzeyler */
+  --color-bg: #fff7ed;
+  --color-surface: #ffffff;
+  --color-surface-2: #fffbf5;
+  --color-surface-sunken: #fef3e7;
+
+  /* Marka turuncu */
+  --color-accent: #f97316;
+  --color-accent-strong: #ea580c;
+  --color-accent-deep: #c2410c;
+  --color-accent-soft: #ffedd5;
+  --color-accent-border: #fed7aa;
+
+  /* Metin */
+  --color-text: #1e293b;
+  --color-text-muted: #475569;
+  --color-text-faint: #94a3b8;
+  --color-on-accent: #ffffff;
+
+  /* Durum renkleri */
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+
+  /* Tipografi */
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+
+  /* Boşluk / yarıçap */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* Gölge */
+  --shadow-sm: 0 1px 2px rgba(234, 88, 12, 0.06);
+  --shadow-md: 0 4px 12px rgba(234, 88, 12, 0.1);
+  --shadow-lg: 0 10px 25px rgba(234, 88, 12, 0.14);
+
+  /* Hareket */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Yerleşim */
+  --sidebar-width: 248px;
+  --topbar-height: 60px;
+}
